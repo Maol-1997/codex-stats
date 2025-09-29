@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { CodexAPIClient } from '../codexClient'
+import { CodexAPIClient } from '../codex-client'
 import { AuthData, RateLimits } from '../types'
 import {
   updateStatusBar,
