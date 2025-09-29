@@ -22,7 +22,7 @@ export function createStatusBarItem(): vscode.StatusBarItem {
 
   // Set initial state with better styling
   statusBarItem.text = '$(codex-blossom) $(sync~spin)'
-  statusBarItem.tooltip = 'Initializing Codex Usage Monitor...'
+  statusBarItem.tooltip = 'Initializing Codex Stats Monitor...'
   statusBarItem.command = 'codex-usage.noop' // Just for pointer cursor
   statusBarItem.show()
 

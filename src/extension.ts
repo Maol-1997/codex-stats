@@ -12,7 +12,7 @@ import { registerCommands } from './commands'
 let updateInterval: NodeJS.Timeout | undefined
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Codex Usage Monitor is now active!')
+  console.log('Codex Stats Monitor is now active!')
 
   // Create status bar item
   const statusBarItem = createStatusBarItem()

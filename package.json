@@ -6,7 +6,7 @@
     "url": "https://github.com/Maol-1997/codex-stats"
   },
   "displayName": "Codex Stats",
-  "description": "Monitor your ChatGPT/Codex usage and rate limits",
+  "description": "Monitor your ChatGPT/Codex Stats and rate limits",
   "version": "1.0.2",
   "publisher": "MartinOrtiz",
   "engines": {
@@ -33,7 +33,7 @@
     "commands": [
       {
         "command": "codex-usage.refresh",
-        "title": "Refresh Codex Usage"
+        "title": "Refresh Codex Stats"
       },
       {
         "command": "codex-usage.login",
@@ -41,7 +41,7 @@
       }
     ],
     "configuration": {
-      "title": "Codex Usage",
+      "title": "Codex Stats",
       "properties": {
         "codexUsage.updateInterval": {
           "type": "number",

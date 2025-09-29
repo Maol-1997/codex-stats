@@ -1,6 +1,6 @@
-# Codex Usage Monitor
+# Codex Stats Monitor
 
-Monitor your ChatGPT/Codex usage and rate limits directly in VS Code's status bar.
+Monitor your ChatGPT/Codex Stats and rate limits directly in VS Code's status bar.
 
 ## Features
 

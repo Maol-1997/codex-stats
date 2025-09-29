@@ -19,7 +19,7 @@ export function createMainTooltip(
 
   // Header section with centered title and icon
   tooltip.appendMarkdown('<div align="center">\n\n')
-  tooltip.appendMarkdown(`## ⚡ Codex Usage Monitor\n\n`)
+  tooltip.appendMarkdown(`## ⚡ Codex Stats Monitor\n\n`)
   tooltip.appendMarkdown('</div>\n\n')
 
   // Account info section with icons
@@ -180,7 +180,7 @@ export function createUpdatingTooltip(): vscode.MarkdownString {
   tooltip.supportHtml = true
 
   tooltip.appendMarkdown('<div align="center">\n\n')
-  tooltip.appendMarkdown(`## ⚡ Codex Usage Monitor\n\n`)
+  tooltip.appendMarkdown(`## ⚡ Codex Stats Monitor\n\n`)
   tooltip.appendMarkdown(`### $(sync~spin) Updating...\n\n`)
   tooltip.appendMarkdown(`Fetching latest rate limits from Codex API...\n\n`)
   tooltip.appendMarkdown('</div>')

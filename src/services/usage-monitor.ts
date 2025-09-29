@@ -84,7 +84,7 @@ function checkRateLimitWarnings(rateLimits: RateLimits) {
 
   if (warnings.length > 0) {
     vscode.window.showWarningMessage(
-      `Codex Usage Warning: ${warnings.join(', ')}`,
+      `Codex Stats Warning: ${warnings.join(', ')}`,
     )
   }
 }
