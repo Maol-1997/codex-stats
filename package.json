@@ -7,7 +7,7 @@
   },
   "displayName": "Codex Stats",
   "description": "Monitor your ChatGPT/Codex Stats and rate limits",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "MartinOrtiz",
   "engines": {
     "vscode": "^1.74.0"
