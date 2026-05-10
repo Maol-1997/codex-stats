@@ -52,6 +52,16 @@
           "type": "boolean",
           "default": false,
           "description": "Show notifications when rate limits are high"
+        },
+        "codexUsage.proxyUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Proxy URL for Codex API requests, for example http://127.0.0.1:7890. Leave empty to connect directly."
+        },
+        "codexUsage.model": {
+          "type": "string",
+          "default": "gpt-5.5",
+          "description": "Model slug used for minimal Codex API requests. Use a model supported by your ChatGPT Codex account."
         }
       }
     }

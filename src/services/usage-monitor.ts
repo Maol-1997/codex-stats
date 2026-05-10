@@ -16,7 +16,7 @@ let currentAuthData: AuthData | undefined
  */
 export function initializeMonitor(authData: AuthData) {
   currentAuthData = authData
-  apiClient = new CodexAPIClient(authData)
+  apiClient = new CodexAPIClient(authData, getProxyUrl(), getModel())
 }
 
 /**
@@ -38,6 +38,8 @@ export async function updateUsage() {
 
     // Send a simple message to get rate limits
     console.log('Calling getRateLimits...')
+    apiClient.setProxyUrl(getProxyUrl())
+    apiClient.setModel(getModel())
     const rateLimits = await apiClient.getRateLimits()
     console.log('getRateLimits returned:', rateLimits)
 
@@ -94,4 +96,18 @@ function checkRateLimitWarnings(rateLimits: RateLimits) {
  */
 export function getCurrentAuthData(): AuthData | undefined {
   return currentAuthData
+}
+
+function getProxyUrl(): string | undefined {
+  const config = vscode.workspace.getConfiguration('codexUsage')
+  const proxyUrl = config.get<string>('proxyUrl')?.trim()
+
+  return proxyUrl || undefined
+}
+
+function getModel(): string {
+  const config = vscode.workspace.getConfiguration('codexUsage')
+  const model = config.get<string>('model')?.trim()
+
+  return model || 'gpt-5.5'
 }
