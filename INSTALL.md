@@ -64,6 +64,19 @@
 
 ## Troubleshooting
 
+**Using a proxy:**
+
+- Open VS Code Settings and search for "Codex Stats Proxy Url"
+- Set `codexUsage.proxyUrl` to your proxy address, for example `http://127.0.0.1:7890`
+- Leave it empty to connect directly
+- Click the status bar item to force refresh after changing the setting
+
+**Unsupported model error:**
+
+- The default request model is `gpt-5.5`
+- If your Codex account supports a different model, set `codexUsage.model` to that model slug
+- Click the status bar item to force refresh after changing the setting
+
 **"Need to login" message:**
 
 - Run `codex login` in terminal
