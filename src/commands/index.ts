@@ -1,11 +1,11 @@
 import * as vscode from 'vscode'
 import { updateUsage } from '../services/usage-monitor'
+import { showLogs } from '../utils/logger'
 
 /**
  * Register all extension commands
  */
 export function registerCommands(context: vscode.ExtensionContext) {
-  // No-op command just to show pointer cursor
   const noopCommand = vscode.commands.registerCommand(
     'codex-usage.noop',
     () => {
@@ -13,7 +13,6 @@ export function registerCommands(context: vscode.ExtensionContext) {
     },
   )
 
-  // Refresh command
   const refreshCommand = vscode.commands.registerCommand(
     'codex-usage.refresh',
     async () => {
@@ -21,7 +20,13 @@ export function registerCommands(context: vscode.ExtensionContext) {
     },
   )
 
-  // Login command
+  const showLogsCommand = vscode.commands.registerCommand(
+    'codex-usage.showLogs',
+    () => {
+      showLogs()
+    },
+  )
+
   const loginCommand = vscode.commands.registerCommand(
     'codex-usage.login',
     async () => {
@@ -49,14 +54,16 @@ export function registerCommands(context: vscode.ExtensionContext) {
         )
       } else if (selection === 'Help') {
         vscode.env.openExternal(
-          vscode.Uri.parse('https://github.com/openai/codex-cli'),
+          vscode.Uri.parse('https://github.com/openai/codex'),
         )
       }
     },
   )
 
-  // Register all commands
-  context.subscriptions.push(noopCommand)
-  context.subscriptions.push(refreshCommand)
-  context.subscriptions.push(loginCommand)
+  context.subscriptions.push(
+    noopCommand,
+    refreshCommand,
+    showLogsCommand,
+    loginCommand,
+  )
 }

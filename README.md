@@ -9,10 +9,12 @@ Monitor your ChatGPT/Codex Stats and rate limits directly in VS Code's status ba
 - ⏱️ **Auto-refresh**: Updates every 5 minutes (configurable)
 - ⚠️ **Usage Warnings**: Visual indicators when approaching rate limits
 - 🔄 **Manual Refresh**: Click the status bar item to refresh immediately
+- 🌐 **Proxy Support**: Route usage requests through a configurable HTTP/HTTPS proxy
+- 🧰 **Diagnostic Logs**: Inspect redacted request and parsing details in VS Code's Output panel
 
 ## How it Works
 
-The extension reads your Codex authentication from `~/.codex/auth.json` (created when you run `codex login`) and periodically sends minimal requests to get your current rate limits from the response headers.
+The extension reads your Codex authentication from `~/.codex/auth.json` (created by `codex login`) and queries ChatGPT's dedicated `/backend-api/wham/usage` endpoint. It does not create a model response just to discover rate limits.
 
 ## Visual Design
 
@@ -78,6 +80,9 @@ You can configure the extension in VS Code settings:
 
 - `codexUsage.updateInterval`: Update interval in seconds (default: 300)
 - `codexUsage.showNotifications`: Show notifications when rate limits are high (default: false)
+- `codexUsage.proxyUrl`: Optional HTTP/HTTPS proxy URL, including URL-encoded credentials when required (default: empty)
+
+Proxy changes take effect on the next automatic or manual refresh.
 
 ## Prerequisites
 
@@ -91,6 +96,8 @@ If you see "Need to login":
 1. Run `codex login` in your terminal
 2. Reload the VS Code window (`Cmd+R` or `Ctrl+R`)
 
+For request or parsing failures, run **Codex Stats: Show Logs** from the Command Palette, or choose **Codex Stats** in **View → Output**. Logs include status, timing, response shape, and proxy host information, but redact token and proxy credentials.
+
 ## Privacy
 
-This extension only reads your local authentication file and sends minimal requests to get rate limit information. No data is sent to third parties.
+This extension reads your local authentication file and sends an authenticated request only to ChatGPT's usage endpoint (or through your configured proxy). Diagnostic logs do not intentionally include access tokens, account IDs, email addresses, or proxy credentials.

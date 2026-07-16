@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
 import { AuthData } from '../types'
+import { logger } from '../utils/logger'
 
 /**
  * Parse JWT token to extract payload
@@ -15,7 +16,9 @@ function parseJWT(token: string): any {
     const payload = Buffer.from(parts[1], 'base64url').toString()
     return JSON.parse(payload)
   } catch (error) {
-    console.error('Error parsing JWT:', error)
+    logger.warn('Could not parse Codex ID token', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     return {}
   }
 }
@@ -29,6 +32,9 @@ export async function loadAuthData(): Promise<AuthData | null> {
 
   try {
     if (!fs.existsSync(authPath)) {
+      logger.warn('Codex auth file does not exist', {
+        codexHomeConfigured: !!process.env.CODEX_HOME,
+      })
       return null
     }
 
@@ -36,10 +42,18 @@ export async function loadAuthData(): Promise<AuthData | null> {
     const authJson = JSON.parse(authContent)
 
     if (!authJson.tokens) {
+      logger.warn('Codex auth file does not contain a tokens object')
       return null
     }
 
-    // Parse ID token to get user info
+    if (!authJson.tokens.id_token || !authJson.tokens.access_token) {
+      logger.warn('Codex auth file is missing required token fields', {
+        idTokenPresent: !!authJson.tokens.id_token,
+        accessTokenPresent: !!authJson.tokens.access_token,
+      })
+      return null
+    }
+
     const idTokenPayload = parseJWT(authJson.tokens.id_token)
 
     return {
@@ -53,7 +67,10 @@ export async function loadAuthData(): Promise<AuthData | null> {
         'Unknown',
     }
   } catch (error) {
-    console.error('Error reading auth file:', error)
+    logger.error('Could not read Codex auth file', {
+      error: error instanceof Error ? error.message : String(error),
+      codexHomeConfigured: !!process.env.CODEX_HOME,
+    })
     return null
   }
 }

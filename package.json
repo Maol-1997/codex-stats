@@ -38,6 +38,10 @@
       {
         "command": "codex-usage.login",
         "title": "Login to Codex"
+      },
+      {
+        "command": "codex-usage.showLogs",
+        "title": "Codex Stats: Show Logs"
       }
     ],
     "configuration": {
@@ -52,6 +56,11 @@
           "type": "boolean",
           "default": false,
           "description": "Show notifications when rate limits are high"
+        },
+        "codexUsage.proxyUrl": {
+          "type": "string",
+          "default": "",
+          "description": "HTTP or HTTPS proxy URL for Codex usage requests, for example http://127.0.0.1:7890"
         }
       }
     }
