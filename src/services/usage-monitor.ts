@@ -7,6 +7,7 @@ import {
   showFetchError,
   showUpdateError,
 } from '../ui/status-bar'
+import { logger } from '../utils/logger'
 
 let apiClient: CodexAPIClient | undefined
 let currentAuthData: AuthData | undefined
@@ -16,35 +17,28 @@ let currentAuthData: AuthData | undefined
  */
 export function initializeMonitor(authData: AuthData) {
   currentAuthData = authData
-  apiClient = new CodexAPIClient(authData)
+  apiClient = new CodexAPIClient(authData, getProxyUrl())
+  logger.info('Usage monitor initialized')
 }
 
 /**
  * Update usage statistics
  */
 export async function updateUsage() {
-  console.log('updateUsage called')
-  console.log('apiClient exists:', !!apiClient)
-  console.log('currentAuthData exists:', !!currentAuthData)
-
   if (!apiClient || !currentAuthData) {
-    console.log('Missing apiClient or authData, returning')
+    logger.warn('Usage update skipped because the monitor is not initialized')
     return
   }
 
   try {
-    console.log('Setting status bar to updating...')
     showUpdating()
+    apiClient.setProxyUrl(getProxyUrl())
 
-    // Send a simple message to get rate limits
-    console.log('Calling getRateLimits...')
     const rateLimits = await apiClient.getRateLimits()
-    console.log('getRateLimits returned:', rateLimits)
 
     if (rateLimits) {
       updateStatusBar(rateLimits, currentAuthData)
 
-      // Check if we should show notifications
       const config = vscode.workspace.getConfiguration('codexUsage')
       const showNotifications = config.get<boolean>('showNotifications')
 
@@ -52,14 +46,13 @@ export async function updateUsage() {
         checkRateLimitWarnings(rateLimits)
       }
     } else {
-      console.log('No rate limits received')
+      logger.warn('No rate limits were returned')
       showFetchError()
     }
   } catch (error) {
-    console.error('Error updating usage:', error)
-    if (error instanceof Error) {
-      console.error('Error details:', error.message)
-    }
+    logger.error('Unexpected error while updating usage', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     showUpdateError(error)
   }
 }
@@ -94,4 +87,10 @@ function checkRateLimitWarnings(rateLimits: RateLimits) {
  */
 export function getCurrentAuthData(): AuthData | undefined {
   return currentAuthData
+}
+
+function getProxyUrl(): string | undefined {
+  const config = vscode.workspace.getConfiguration('codexUsage')
+  const proxyUrl = config.get<string>('proxyUrl')?.trim()
+  return proxyUrl || undefined
 }

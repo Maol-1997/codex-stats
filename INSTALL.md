@@ -64,6 +64,14 @@
 
 ## Troubleshooting
 
+**Using a proxy:**
+
+- Open VS Code Settings and search for "Codex Stats Proxy Url"
+- Set `codexUsage.proxyUrl` to an HTTP/HTTPS proxy, for example `http://127.0.0.1:7890`
+- Authenticated proxies are supported with URL-encoded credentials
+- Leave the setting empty to use the default network configuration
+- Click the status bar item to apply a changed proxy immediately
+
 **"Need to login" message:**
 
 - Run `codex login` in terminal
@@ -72,12 +80,12 @@
 
 **No status bar item visible:**
 
-- Check the Output panel (`View > Output`)
-- Select "Codex Stats Monitor" from the dropdown
-- Look for any error messages
+- Run **Codex Stats: Show Logs** from the Command Palette
+- Or open **View → Output** and select **Codex Stats**
 
 **Rate limits not updating:**
 
 - Click the status bar item to force refresh
-- Check your internet connection
-- Verify your auth token hasn't expired
+- Check the Codex Stats output for HTTP status and parsing diagnostics
+- Check your internet or proxy connection
+- Verify your auth token has not expired
