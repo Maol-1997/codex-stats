@@ -17,3 +17,5 @@ export interface RateLimits {
     primary?: RateLimitWindow;
     secondary?: RateLimitWindow;
 }
+
+export type UsageDisplayMode = 'used' | 'remaining';
