@@ -57,6 +57,19 @@
           "default": false,
           "description": "Show notifications when rate limits are high"
         },
+        "codexUsage.displayMode": {
+          "type": "string",
+          "enum": [
+            "used",
+            "remaining"
+          ],
+          "enumDescriptions": [
+            "Display the percentage of the rate limit already used",
+            "Display the percentage of the rate limit remaining"
+          ],
+          "default": "used",
+          "description": "Choose whether Codex Stats displays used or remaining percentage"
+        },
         "codexUsage.proxyUrl": {
           "type": "string",
           "default": "",

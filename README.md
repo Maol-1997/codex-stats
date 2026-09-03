@@ -8,6 +8,7 @@ Monitor your ChatGPT/Codex Stats and rate limits directly in VS Code's status ba
 - 👤 **Account Information**: Displays your email and plan type in the tooltip
 - ⏱️ **Auto-refresh**: Updates every 5 minutes (configurable)
 - ⚠️ **Usage Warnings**: Visual indicators when approaching rate limits
+- 🔢 **Display Mode**: Choose between showing percentage used or percentage remaining
 - 🔄 **Manual Refresh**: Click the status bar item to refresh immediately
 - 🌐 **Proxy Support**: Route usage requests through a configurable HTTP/HTTPS proxy
 - 🧰 **Diagnostic Logs**: Inspect redacted request and parsing details in VS Code's Output panel
@@ -80,6 +81,7 @@ You can configure the extension in VS Code settings:
 
 - `codexUsage.updateInterval`: Update interval in seconds (default: 300)
 - `codexUsage.showNotifications`: Show notifications when rate limits are high (default: false)
+- `codexUsage.displayMode`: Display percentage used or percentage remaining (default: `used`)
 - `codexUsage.proxyUrl`: Optional HTTP/HTTPS proxy URL, including URL-encoded credentials when required (default: empty)
 
 Proxy changes take effect on the next automatic or manual refresh.

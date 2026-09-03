@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { RateLimits, AuthData } from '../types'
+import { RateLimits, AuthData, UsageDisplayMode } from '../types'
 import {
   createMainTooltip,
   createAuthRequiredTooltip,
@@ -10,6 +10,8 @@ import {
 } from './tooltip-builder'
 
 let statusBarItem: vscode.StatusBarItem
+let currentRateLimits: RateLimits | undefined
+let currentAuthData: AuthData | undefined
 
 /**
  * Create and initialize the status bar item
@@ -33,6 +35,12 @@ export function createStatusBarItem(): vscode.StatusBarItem {
  * Update status bar with rate limits data
  */
 export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
+  currentRateLimits = rateLimits
+  currentAuthData = authData
+
+  const config = vscode.workspace.getConfiguration('codexUsage')
+  const displayMode = config.get<UsageDisplayMode>('displayMode', 'used')
+
   // Determine usage percentages
   let primaryPercent = 0
   let secondaryPercent = 0
@@ -46,8 +54,10 @@ export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
     secondaryPercent = rateLimits.secondary.used_percent
   }
 
+  const primaryDisplayPercent = getDisplayPercent(primaryPercent, displayMode)
+
   // Update status bar text with custom icon - no colors
-  statusBarItem.text = `$(codex-blossom) ${primaryPercent.toFixed(0)}%`
+  statusBarItem.text = `$(codex-blossom) ${primaryDisplayPercent.toFixed(0)}%`
   statusBarItem.color = undefined
   statusBarItem.backgroundColor = undefined
 
@@ -57,7 +67,24 @@ export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
     authData,
     primaryPercent,
     secondaryPercent,
+    displayMode,
   )
+}
+
+/**
+ * Re-render the current usage data after a display setting changes
+ */
+export function refreshStatusBarDisplay() {
+  if (currentRateLimits && currentAuthData) {
+    updateStatusBar(currentRateLimits, currentAuthData)
+  }
+}
+
+function getDisplayPercent(
+  usedPercent: number,
+  displayMode: UsageDisplayMode,
+): number {
+  return displayMode === 'remaining' ? 100 - usedPercent : usedPercent
 }
 
 /**

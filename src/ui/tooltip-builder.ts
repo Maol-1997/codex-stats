@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { RateLimits, AuthData } from '../types'
+import { RateLimits, AuthData, UsageDisplayMode } from '../types'
 import { createProgressBar } from './progress-bar'
 import { formatResetTime } from '../utils/time-formatter'
 
@@ -11,6 +11,7 @@ export function createMainTooltip(
   authData: AuthData,
   primaryPercent: number,
   secondaryPercent: number,
+  displayMode: UsageDisplayMode = 'used',
 ): vscode.MarkdownString {
   const tooltip = new vscode.MarkdownString()
   tooltip.supportHtml = true
@@ -32,6 +33,7 @@ export function createMainTooltip(
   tooltip.appendMarkdown(`### 🚀 Rate Limits\n\n`)
 
   if (rateLimits.primary) {
+    const primaryDisplayPercent = getDisplayPercent(primaryPercent, displayMode)
     const windowHours = rateLimits.primary.window_minutes
       ? Math.floor(rateLimits.primary.window_minutes / 60)
       : 5
@@ -42,7 +44,9 @@ export function createMainTooltip(
     else if (primaryPercent >= 75) limitIcon = '🟡'
 
     tooltip.appendMarkdown(`#### ${limitIcon} ${windowHours}-Hour Limit\n\n`)
-    tooltip.appendMarkdown(`${createProgressBar(primaryPercent)}\n\n`)
+    tooltip.appendMarkdown(
+      `${createProgressBar(primaryDisplayPercent, primaryPercent)}\n\n`,
+    )
 
     if (rateLimits.primary.resets_in_seconds) {
       const resetTime = formatResetTime(rateLimits.primary.resets_in_seconds)
@@ -52,6 +56,10 @@ export function createMainTooltip(
   }
 
   if (rateLimits.secondary) {
+    const secondaryDisplayPercent = getDisplayPercent(
+      secondaryPercent,
+      displayMode,
+    )
     const windowDays = rateLimits.secondary.window_minutes
       ? Math.floor(rateLimits.secondary.window_minutes / (60 * 24))
       : 7
@@ -62,7 +70,9 @@ export function createMainTooltip(
     else if (secondaryPercent >= 75) limitIcon = '🟡'
 
     tooltip.appendMarkdown(`#### ${limitIcon} ${windowDays}-Day Limit\n\n`)
-    tooltip.appendMarkdown(`${createProgressBar(secondaryPercent)}\n\n`)
+    tooltip.appendMarkdown(
+      `${createProgressBar(secondaryDisplayPercent, secondaryPercent)}\n\n`,
+    )
 
     if (rateLimits.secondary.resets_in_seconds) {
       const resetTime = formatResetTime(rateLimits.secondary.resets_in_seconds)
@@ -70,6 +80,10 @@ export function createMainTooltip(
     }
     tooltip.appendMarkdown(`\n`)
   }
+
+  tooltip.appendMarkdown(
+    `*Displaying percentage ${displayMode === 'remaining' ? 'remaining' : 'used'}.*\n\n`,
+  )
 
   // Usage Tips section (only show when usage is high)
   if (primaryPercent > 75 || secondaryPercent > 75) {
@@ -104,6 +118,13 @@ export function createMainTooltip(
   tooltip.appendMarkdown(`🕒 Last updated: **${timeStr}**\n\n`)
 
   return tooltip
+}
+
+function getDisplayPercent(
+  usedPercent: number,
+  displayMode: UsageDisplayMode,
+): number {
+  return displayMode === 'remaining' ? 100 - usedPercent : usedPercent
 }
 
 /**
