@@ -12,6 +12,7 @@ export function createMainTooltip(
   primaryPercent: number,
   secondaryPercent: number,
   displayMode: UsageDisplayMode = 'used',
+  lastUpdated: Date = new Date(),
 ): vscode.MarkdownString {
   const tooltip = new vscode.MarkdownString()
   tooltip.supportHtml = true
@@ -110,8 +111,7 @@ export function createMainTooltip(
   )
 
   // Last update time with clock icon
-  const now = new Date()
-  const timeStr = now.toLocaleTimeString([], {
+  const timeStr = lastUpdated.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
   })
