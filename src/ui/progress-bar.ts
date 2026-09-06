@@ -1,7 +1,10 @@
 /**
  * Create an emoji-based progress bar like cursor-stats
  */
-export function createProgressBar(percent: number): string {
+export function createProgressBar(
+  percent: number,
+  usagePercent: number = percent,
+): string {
   // Emoji-based progress bar like cursor-stats
   const PROGRESS_EMPTY = '⬜'
   const PROGRESS_FILLED = '🟩'
@@ -21,9 +24,10 @@ export function createProgressBar(percent: number): string {
 
   // Choose emoji color based on thresholds
   let filledEmoji = PROGRESS_FILLED
-  if (clampedPercentage >= criticalThreshold) {
+  const clampedUsagePercentage = Math.max(0, Math.min(100, usagePercent))
+  if (clampedUsagePercentage >= criticalThreshold) {
     filledEmoji = PROGRESS_CRITICAL
-  } else if (clampedPercentage >= warningThreshold) {
+  } else if (clampedUsagePercentage >= warningThreshold) {
     filledEmoji = PROGRESS_WARNING
   }
 
