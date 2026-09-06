@@ -23,7 +23,10 @@ export function activate(context: vscode.ExtensionContext) {
   registerCommands(context)
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration('codexUsage.displayMode')) {
+      if (
+        event.affectsConfiguration('codexUsage.displayMode') ||
+        event.affectsConfiguration('codexUsage.showWeeklyUsage')
+      ) {
         refreshStatusBarDisplay()
       }
     }),

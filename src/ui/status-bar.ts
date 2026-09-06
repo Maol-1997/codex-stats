@@ -52,7 +52,8 @@ function renderCurrentUsage() {
   }
 
   const config = vscode.workspace.getConfiguration('codexUsage')
-  const displayMode = config.get<UsageDisplayMode>('displayMode', 'used')
+  const displayMode = config.get<UsageDisplayMode>('displayMode', 'remaining')
+  const showWeeklyUsage = config.get<boolean>('showWeeklyUsage', true)
 
   // Determine usage percentages
   let primaryPercent = 0
@@ -68,9 +69,17 @@ function renderCurrentUsage() {
   }
 
   const primaryDisplayPercent = getDisplayPercent(primaryPercent, displayMode)
+  const secondaryDisplayPercent = getDisplayPercent(
+    secondaryPercent,
+    displayMode,
+  )
+  const weeklyText =
+    showWeeklyUsage && currentRateLimits.secondary
+      ? ` (${secondaryDisplayPercent.toFixed(0)}%)`
+      : ''
 
   // Update status bar text with custom icon - no colors
-  statusBarItem.text = `$(codex-blossom) ${primaryDisplayPercent.toFixed(0)}%`
+  statusBarItem.text = `$(codex-blossom) ${primaryDisplayPercent.toFixed(0)}%${weeklyText}`
   statusBarItem.color = undefined
   statusBarItem.backgroundColor = undefined
 

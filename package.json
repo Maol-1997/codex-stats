@@ -7,7 +7,7 @@
   },
   "displayName": "Codex Stats",
   "description": "Monitor your ChatGPT/Codex Stats and rate limits",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "MartinOrtiz",
   "engines": {
     "vscode": "^1.74.0"
@@ -67,8 +67,13 @@
             "Display the percentage of the rate limit already used",
             "Display the percentage of the rate limit remaining"
           ],
-          "default": "used",
+          "default": "remaining",
           "description": "Choose whether Codex Stats displays used or remaining percentage"
+        },
+        "codexUsage.showWeeklyUsage": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the weekly usage percentage in parentheses in the status bar"
         },
         "codexUsage.proxyUrl": {
           "type": "string",
