@@ -58,7 +58,7 @@ export function refreshStatusBar() {
     config.get<string>('limitDisplay') === 'left' ? 'left' : 'used'
   const statusLimit = rateLimits.primary ?? rateLimits.secondary
   const label = statusLimit
-    ? `${getDisplayPercent(statusLimit.used_percent, mode).toFixed(0)}% ${mode}`
+    ? `${getDisplayPercent(statusLimit.used_percent, mode).toFixed(0)}%`
     : '--'
 
   // Update status bar text with custom icon - no colors
