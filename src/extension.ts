@@ -5,6 +5,7 @@ import {
   showAuthRequired,
   showAuthError,
   getStatusBarItem,
+  refreshStatusBar,
 } from './ui/status-bar'
 import { initializeMonitor, updateUsage } from './services/usage-monitor'
 import { registerCommands } from './commands'
@@ -18,6 +19,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   const statusBarItem = createStatusBarItem()
   context.subscriptions.push(statusBarItem)
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration('codexUsage.limitDisplay')) {
+        refreshStatusBar()
+      }
+    }),
+  )
 
   registerCommands(context)
   loadAuthAndStartMonitoring()

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { RateLimits, AuthData } from '../types'
 import { createProgressBar } from './progress-bar'
+import { LimitDisplayMode } from './limit-display'
 import { formatResetTime } from '../utils/time-formatter'
 
 /**
@@ -9,9 +10,11 @@ import { formatResetTime } from '../utils/time-formatter'
 export function createMainTooltip(
   rateLimits: RateLimits,
   authData: AuthData,
-  primaryPercent: number,
-  secondaryPercent: number,
+  mode: LimitDisplayMode = 'used',
+  updatedAt: Date = new Date(),
 ): vscode.MarkdownString {
+  const primaryPercent = rateLimits.primary?.used_percent ?? 0
+  const secondaryPercent = rateLimits.secondary?.used_percent ?? 0
   const tooltip = new vscode.MarkdownString()
   tooltip.supportHtml = true
   tooltip.isTrusted = true
@@ -42,7 +45,7 @@ export function createMainTooltip(
     else if (primaryPercent >= 75) limitIcon = '🟡'
 
     tooltip.appendMarkdown(`#### ${limitIcon} ${windowHours}-Hour Limit\n\n`)
-    tooltip.appendMarkdown(`${createProgressBar(primaryPercent)}\n\n`)
+    tooltip.appendMarkdown(`${createProgressBar(primaryPercent, mode)}\n\n`)
 
     if (rateLimits.primary.resets_in_seconds) {
       const resetTime = formatResetTime(rateLimits.primary.resets_in_seconds)
@@ -62,7 +65,7 @@ export function createMainTooltip(
     else if (secondaryPercent >= 75) limitIcon = '🟡'
 
     tooltip.appendMarkdown(`#### ${limitIcon} ${windowDays}-Day Limit\n\n`)
-    tooltip.appendMarkdown(`${createProgressBar(secondaryPercent)}\n\n`)
+    tooltip.appendMarkdown(`${createProgressBar(secondaryPercent, mode)}\n\n`)
 
     if (rateLimits.secondary.resets_in_seconds) {
       const resetTime = formatResetTime(rateLimits.secondary.resets_in_seconds)
@@ -96,8 +99,7 @@ export function createMainTooltip(
   )
 
   // Last update time with clock icon
-  const now = new Date()
-  const timeStr = now.toLocaleTimeString([], {
+  const timeStr = updatedAt.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
   })

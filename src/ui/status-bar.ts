@@ -1,5 +1,6 @@
 import * as vscode from 'vscode'
 import { RateLimits, AuthData } from '../types'
+import { getDisplayPercent, LimitDisplayMode } from './limit-display'
 import {
   createMainTooltip,
   createAuthRequiredTooltip,
@@ -10,11 +11,17 @@ import {
 } from './tooltip-builder'
 
 let statusBarItem: vscode.StatusBarItem
+let currentUsage: {
+  rateLimits: RateLimits
+  authData: AuthData
+  updatedAt: Date
+} | undefined
 
 /**
  * Create and initialize the status bar item
  */
 export function createStatusBarItem(): vscode.StatusBarItem {
+  currentUsage = undefined
   statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
     100,
@@ -33,21 +40,29 @@ export function createStatusBarItem(): vscode.StatusBarItem {
  * Update status bar with rate limits data
  */
 export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
-  // Determine usage percentages
-  let primaryPercent = 0
-  let secondaryPercent = 0
-  let statusColor = 'charts.green'
+  currentUsage = { rateLimits, authData, updatedAt: new Date() }
+  refreshStatusBar()
+}
 
-  if (rateLimits.primary) {
-    primaryPercent = rateLimits.primary.used_percent
+/**
+ * Re-render the current usage after a display setting change without fetching.
+ */
+export function refreshStatusBar() {
+  if (!currentUsage) {
+    return
   }
 
-  if (rateLimits.secondary) {
-    secondaryPercent = rateLimits.secondary.used_percent
-  }
+  const { rateLimits, authData, updatedAt } = currentUsage
+  const config = vscode.workspace.getConfiguration('codexUsage')
+  const mode: LimitDisplayMode =
+    config.get<string>('limitDisplay') === 'left' ? 'left' : 'used'
+  const statusLimit = rateLimits.primary ?? rateLimits.secondary
+  const label = statusLimit
+    ? `${getDisplayPercent(statusLimit.used_percent, mode).toFixed(0)}% ${mode}`
+    : '--'
 
   // Update status bar text with custom icon - no colors
-  statusBarItem.text = `$(codex-blossom) ${primaryPercent.toFixed(0)}%`
+  statusBarItem.text = `$(codex-blossom) ${label}`
   statusBarItem.color = undefined
   statusBarItem.backgroundColor = undefined
 
@@ -55,8 +70,8 @@ export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
   statusBarItem.tooltip = createMainTooltip(
     rateLimits,
     authData,
-    primaryPercent,
-    secondaryPercent,
+    mode,
+    updatedAt,
   )
 }
 
@@ -64,6 +79,7 @@ export function updateStatusBar(rateLimits: RateLimits, authData: AuthData) {
  * Show authentication required state
  */
 export function showAuthRequired() {
+  currentUsage = undefined
   statusBarItem.text = '$(error)'
   statusBarItem.color = new vscode.ThemeColor('errorForeground')
   statusBarItem.tooltip = createAuthRequiredTooltip()
@@ -74,6 +90,7 @@ export function showAuthRequired() {
  * Show authentication error state
  */
 export function showAuthError(error: any) {
+  currentUsage = undefined
   statusBarItem.text = '$(error)'
   statusBarItem.color = new vscode.ThemeColor('errorForeground')
   statusBarItem.tooltip = createAuthErrorTooltip(error)
@@ -83,6 +100,7 @@ export function showAuthError(error: any) {
  * Show updating state
  */
 export function showUpdating() {
+  currentUsage = undefined
   statusBarItem.text = '$(codex-blossom) $(sync~spin)'
   statusBarItem.color = undefined // Reset color while updating
   statusBarItem.tooltip = createUpdatingTooltip()
@@ -92,6 +110,7 @@ export function showUpdating() {
  * Show fetch error state
  */
 export function showFetchError() {
+  currentUsage = undefined
   statusBarItem.text = '$(warning)'
   statusBarItem.color = new vscode.ThemeColor('editorWarning.foreground')
   statusBarItem.tooltip = createFetchErrorTooltip()
@@ -101,6 +120,7 @@ export function showFetchError() {
  * Show update error state
  */
 export function showUpdateError(error: any) {
+  currentUsage = undefined
   statusBarItem.text = '$(warning)'
   statusBarItem.color = new vscode.ThemeColor('editorWarning.foreground')
   statusBarItem.tooltip = createUpdateErrorTooltip(error)

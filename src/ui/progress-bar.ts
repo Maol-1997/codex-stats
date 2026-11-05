@@ -1,7 +1,12 @@
+import { getDisplayPercent, LimitDisplayMode } from './limit-display'
+
 /**
  * Create an emoji-based progress bar like cursor-stats
  */
-export function createProgressBar(percent: number): string {
+export function createProgressBar(
+  usedPercent: number,
+  mode: LimitDisplayMode = 'used',
+): string {
   // Emoji-based progress bar like cursor-stats
   const PROGRESS_EMPTY = '⬜'
   const PROGRESS_FILLED = '🟩'
@@ -13,17 +18,17 @@ export function createProgressBar(percent: number): string {
   const criticalThreshold = 90
 
   // Ensure percentage is within 0-100 range
-  const clampedPercentage = Math.max(0, Math.min(100, percent))
+  const displayPercent = getDisplayPercent(usedPercent, mode)
 
   // Calculate filled positions
-  const filledCount = Math.round((clampedPercentage / 100) * length)
+  const filledCount = Math.round((displayPercent / 100) * length)
   const emptyCount = length - filledCount
 
   // Choose emoji color based on thresholds
   let filledEmoji = PROGRESS_FILLED
-  if (clampedPercentage >= criticalThreshold) {
+  if (usedPercent >= criticalThreshold) {
     filledEmoji = PROGRESS_CRITICAL
-  } else if (clampedPercentage >= warningThreshold) {
+  } else if (usedPercent >= warningThreshold) {
     filledEmoji = PROGRESS_WARNING
   }
 
@@ -32,5 +37,5 @@ export function createProgressBar(percent: number): string {
     filledEmoji.repeat(filledCount) + PROGRESS_EMPTY.repeat(emptyCount)
 
   // Format with percentage aligned
-  return `${bar}  **${percent.toFixed(0)}%**`
+  return `${bar}  **${displayPercent.toFixed(0)}% ${mode}**`
 }

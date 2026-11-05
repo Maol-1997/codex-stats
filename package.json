@@ -47,6 +47,16 @@
     "configuration": {
       "title": "Codex Stats",
       "properties": {
+        "codexUsage.limitDisplay": {
+          "type": "string",
+          "enum": ["used", "left"],
+          "enumDescriptions": [
+            "Show the percentage of the limit already used.",
+            "Show the percentage of the limit remaining."
+          ],
+          "default": "used",
+          "description": "Display used or remaining capacity in the status bar and hover popup."
+        },
         "codexUsage.updateInterval": {
           "type": "number",
           "default": 300,

@@ -79,6 +79,7 @@ Then install the generated `.vsix` file in VS Code.
 You can configure the extension in VS Code settings:
 
 - `codexUsage.updateInterval`: Update interval in seconds (default: 300)
+- `codexUsage.limitDisplay`: Show `used` (default) or `left` percentages in the status bar and hover popup. Changes apply immediately. Popup bars follow the selected mode; warning colors still reflect actual usage.
 - `codexUsage.showNotifications`: Show notifications when rate limits are high (default: false)
 - `codexUsage.proxyUrl`: Optional HTTP/HTTPS proxy URL, including URL-encoded credentials when required (default: empty)
 
